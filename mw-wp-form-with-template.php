@@ -20,11 +20,11 @@ include_once( plugin_dir_path( __FILE__ ) . 'lib/tinyTemplate.php' );
 class MW_WP_Form_With_Template {
 
   public function __construct() {
-    $this->_test();
+    // $this->_test();
   }
 
   public function _test() {
-    var_dump('hoge!!!!');
+    return 'hoge!!!!';
   }
 
   /**
@@ -46,5 +46,3 @@ class MW_WP_Form_With_Template {
   }
 
 }
-
-$mw_wp_form_with_template = new MW_WP_Form_With_Template();
