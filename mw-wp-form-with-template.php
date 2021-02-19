@@ -16,15 +16,32 @@
  */
 
 include_once( plugin_dir_path( __FILE__ ) . 'lib/tinyTemplate.php' );
-
 class MW_WP_Form_With_Template {
+
+  public $tpl;
 
   public function __construct() {
     // $this->_test();
+    $this->tpl = new tinyTemplate();
+    // var_dump($tpl);
   }
 
   public function _test() {
     return 'hoge!!!!';
+  }
+
+  public function get_template_data() {
+
+  }
+
+  public function set_values() {
+    $mwform_text_463 = 'choco ball';
+    // $mwform_text_463 = 'チョコボール';
+    $this->tpl->set('text-a', $mwform_text_463);
+  }
+
+  public function fetch_template() {
+    return $this->tpl->fetch(plugin_dir_path( __FILE__ ) . 'templates/9/default.txt');
   }
 
   /**
