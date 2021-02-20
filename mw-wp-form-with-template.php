@@ -4,8 +4,8 @@
  * Plugin URI: https://github.com/hippohack/mw-wp-form-with-template
  * Description: Enable management of MW WP Form email body with template.
  * Version: 0.0.1
- * Author: hippohack
- * Author URI: https://www.hippohack.me
+ * Author: @hippohack
+ * Author URI: https://twitter.com/hippohack
  * Text Domain:
  * License: GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -34,10 +34,10 @@ class MW_WP_Form_With_Template {
 
   }
 
-  public function set_values() {
-    $mwform_text_463 = 'choco ball';
-    // $mwform_text_463 = 'チョコボール';
-    $this->tpl->set('text-a', $mwform_text_463);
+  public function set_values($values) {
+    foreach ($values as $key => $value) {
+      $this->tpl->set($key, $value);
+    }
   }
 
   public function fetch_template() {
