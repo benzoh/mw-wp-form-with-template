@@ -49,6 +49,7 @@ class MW_WP_Form_With_Template {
 
   public function set_values($values) {
     foreach ($values as $key => $value) {
+      $value = $this->rebuild_array_data($value);
       $this->tpl->set($key, $value);
     }
   }
@@ -65,6 +66,20 @@ class MW_WP_Form_With_Template {
       return $this->tpl->fetch($this->admin_template);
     }
     return $this->tpl->fetch($this->default_admin_template);
+  }
+
+  // チェックボックスなどの値が直接配列に入らないので整形する
+  private function rebuild_array_data($value) {
+    if (!is_array($value)) {
+      return $value;
+    }
+
+    if (!isset($value['data']) || !isset($value['separator'])) {
+      return $value;
+    }
+
+    $res = explode($value['separator'], $value['data']);
+    return $res;
   }
 
 }
