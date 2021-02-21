@@ -19,19 +19,32 @@ include_once( plugin_dir_path( __FILE__ ) . 'lib/tinyTemplate.php' );
 class MW_WP_Form_With_Template {
 
   public $tpl;
+  public $form_id;
+  public $mail_type;
+  public $data;
+  public $admin_template;
+  public $auto_template;
 
-  public function __construct() {
-    // $this->_test();
+  public function __construct($data, $mail_type) {
     $this->tpl = new tinyTemplate();
-    // var_dump($tpl);
+    $this->form_id = $data->get('mw-wp-form-form-id');
+    $this->mail_type = $mail_type;
+    $this->data = $data;
+
+    $this->default_admin_template = plugin_dir_path( __FILE__ ) . 'templates/default/admin.txt';
+    $this->default_auto_template = plugin_dir_path( __FILE__ ) . 'templates/default/auto.txt';
   }
 
-  public function _test() {
-    return 'hoge!!!!';
+  public function combine() {
+    $this->set_template_data();
+    $this->set_values($this->data->gets());
+
+    return $this->fetch_template();
   }
 
-  public function get_template_data() {
-
+  public function set_template_data() {
+    $this->admin_template = plugin_dir_path( __FILE__ ) . 'templates/'.$this->form_id.'/admin.txt';
+    $this->auto_template = plugin_dir_path( __FILE__ ) . 'templates/'.$this->form_id.'/auto.txt';
   }
 
   public function set_values($values) {
@@ -41,25 +54,17 @@ class MW_WP_Form_With_Template {
   }
 
   public function fetch_template() {
-    return $this->tpl->fetch(plugin_dir_path( __FILE__ ) . 'templates/9/default.txt');
-  }
+    if ($this->mail_type === 'auto') {
+      if (file_exists($this->auto_template)) {
+        return $this->tpl->fetch($this->auto_template);
+      }
+      return $this->tpl->fetch($this->default_auto_template);
+    }
 
-  /**
-   * フォーム本文をテンプレ化したい
-   */
-  public function _custom_mail_template($Mail, $values, $Data) {
-    $_values = $Data->gets();
-    // var_dump($_values);
-    // var_dump($Mail, $values, $Data);
-    $mail_body = $Mail->body;
-
-    // TODO: ここでテンプレに当て込む処理する
-    // TODO: テンプレートを読み込んで１行ごとに配列にする
-    // TODO: ループ処理で置換する
-    // TODO: $Mail->bodyに入れ込む
-    $template = '<div>{{mwform_text-463}}</div>';
-    $res = str_replace('{{mwform_text-463}}', $_values['mwform_text-463'], $template);
-    var_dump($res);
+    if (file_exists($this->admin_template)) {
+      return $this->tpl->fetch($this->admin_template);
+    }
+    return $this->tpl->fetch($this->default_admin_template);
   }
 
 }
