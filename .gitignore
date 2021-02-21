@@ -1,0 +1,5 @@
+templates/**/*
+
+!templates/default/
+!templates/default/auto.txt
+!templates/default/admin.txt
