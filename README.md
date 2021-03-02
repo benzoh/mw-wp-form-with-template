@@ -4,6 +4,24 @@ Enable management of MW WP Form email body with template.
 
 ## usues
 
+### フォーム本文の設定
+
+テンプレートから出力する箇所に `__body_template__` を記述する。
+
+```
+{name} 様
+
+ヘッダー
+
+ーーーーーーーー
+
+__body_template__
+
+ーーーーーーーー
+
+フッター
+```
+
 ### function.phpに追記
 
 ```php:function.php

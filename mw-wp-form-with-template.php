@@ -28,31 +28,51 @@ class MW_WP_Form_With_Template {
     $this->mail = $mail;
     $this->data = $data;
     $this->tpl = plugin_dir_path( __FILE__ ) . 'templates/'.$this->form_id.'_admin.php';
+    $this->rows = array();
   }
 
   public function combine() {
     $this->set_rows($this->data->gets());
 
-    return $this->fetch_template();
+    return str_replace( '__body_template__', $this->create_body_from_rows() , $this->mail->body );
   }
 
   public function set_rows($values) {
-    include_once $this->tpl;
+    include $this->tpl;
     // var_dump($template);
-    $this->rows = array();
 
     foreach ( $template as $key => $value ) {
       $this->rows[] = array(
         'label' => $value,
-        'value' => $this->rebuild_array_data($values[$key])
+        'value' => $values[$key]
+        // 'value' => $this->rebuild_array_data($values[$key])
       );
     }
     // var_dump($rows);
   }
 
   public function create_body_from_rows() {
-    // TODO: ここから
-    return 'body';
+    $body = '';
+    foreach($this->rows as $key => $row) {
+      $value = $this->pick_form_array_data($row['value']);
+
+      if ($key === array_key_last($this->rows)) {
+        $body .= $row['label'] . '：' . $value;
+        break;
+      }
+
+      $body .= $row['label'] . '：' . $value . "\n";
+    }
+
+    return $body;
+  }
+
+  private function pick_form_array_data($value) {
+    if (!is_array($value)) {
+      return $value;
+    }
+
+    return str_replace( ',', ', ' , $value['data'] );
   }
 
   // チェックボックスなどの値が直接配列に入らないので整形する
