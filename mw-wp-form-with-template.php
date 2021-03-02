@@ -15,57 +15,44 @@
  * @license GPL-2.0+
  */
 
-include_once( plugin_dir_path( __FILE__ ) . 'lib/tinyTemplate.php' );
 class MW_WP_Form_With_Template {
 
   public $tpl;
   public $form_id;
-  public $mail_type;
+  public $mail;
   public $data;
-  public $admin_template;
-  public $auto_template;
+  public $rows;
 
-  public function __construct($data, $mail_type) {
-    $this->tpl = new tinyTemplate();
+  public function __construct($mail, $data) {
     $this->form_id = $data->get('mw-wp-form-form-id');
-    $this->mail_type = $mail_type;
+    $this->mail = $mail;
     $this->data = $data;
-
-    $this->default_admin_template = plugin_dir_path( __FILE__ ) . 'templates/default/admin.txt';
-    $this->default_auto_template = plugin_dir_path( __FILE__ ) . 'templates/default/auto.txt';
+    $this->tpl = plugin_dir_path( __FILE__ ) . 'templates/'.$this->form_id.'_admin.php';
   }
 
   public function combine() {
-    $this->set_template_data();
-    $this->set_values($this->data->gets());
+    $this->set_rows($this->data->gets());
 
     return $this->fetch_template();
   }
 
-  public function set_template_data() {
-    $this->admin_template = plugin_dir_path( __FILE__ ) . 'templates/'.$this->form_id.'/admin.txt';
-    $this->auto_template = plugin_dir_path( __FILE__ ) . 'templates/'.$this->form_id.'/auto.txt';
+  public function set_rows($values) {
+    include_once $this->tpl;
+    // var_dump($template);
+    $this->rows = array();
+
+    foreach ( $template as $key => $value ) {
+      $this->rows[] = array(
+        'label' => $value,
+        'value' => $this->rebuild_array_data($values[$key])
+      );
+    }
+    // var_dump($rows);
   }
 
-  public function set_values($values) {
-    foreach ($values as $key => $value) {
-      $value = $this->rebuild_array_data($value);
-      $this->tpl->set($key, $value);
-    }
-  }
-
-  public function fetch_template() {
-    if ($this->mail_type === 'auto') {
-      if (file_exists($this->auto_template)) {
-        return $this->tpl->fetch($this->auto_template);
-      }
-      return $this->tpl->fetch($this->default_auto_template);
-    }
-
-    if (file_exists($this->admin_template)) {
-      return $this->tpl->fetch($this->admin_template);
-    }
-    return $this->tpl->fetch($this->default_admin_template);
+  public function create_body_from_rows() {
+    // TODO: ここから
+    return 'body';
   }
 
   // チェックボックスなどの値が直接配列に入らないので整形する
