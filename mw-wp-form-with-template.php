@@ -42,8 +42,13 @@ class MW_WP_Form_With_Template {
     // var_dump($template);
 
     foreach ( $template as $key => $value ) {
+      // parentのチェックしてなかったらスキップ
+      if ($value['parent'] && !$values[$value['parent']]) {
+        continue;
+      }
+
       $this->rows[] = array(
-        'label' => $value,
+        'label' => $value['label'],
         'value' => $values[$key]
         // 'value' => $this->rebuild_array_data($values[$key])
       );
