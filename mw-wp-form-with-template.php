@@ -47,10 +47,19 @@ class MW_WP_Form_With_Template {
         continue;
       }
 
+      // マッチ条件で出し分け
+      $haystack = $this->pick_form_array_data($values[$value['conditions']['key']]);
+      $needle = $value['conditions']['value'];
+
+      if ($value['conditions'] && strpos($haystack, $needle) === false) {
+        continue;
+      }
+
       $this->rows[] = array(
         'label' => $value['label'],
-        'value' => $values[$key]
-        // 'value' => $this->rebuild_array_data($values[$key])
+        'value' => $values[$key],
+        'prepend' => $value['prepend'],
+        'append' => $value['append'],
       );
     }
     // var_dump($rows);
@@ -58,15 +67,22 @@ class MW_WP_Form_With_Template {
 
   public function create_body_from_rows() {
     $body = '';
+
     foreach($this->rows as $key => $row) {
       $value = $this->pick_form_array_data($row['value']);
 
+      if ($row['prepend']) $body .= $row['prepend'];
+
       if ($key === array_key_last($this->rows)) {
         $body .= $row['label'] . '：' . $value;
+        if ($row['append']) $body .= $row['append'];
+
         break;
       }
 
       $body .= $row['label'] . '：' . $value . "\n";
+
+      if ($row['append']) $body .= $row['append'];
     }
 
     return $body;
