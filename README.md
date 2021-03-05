@@ -8,7 +8,7 @@ Enable management of MW WP Form email body with template.
 
 テンプレートから出力する箇所に `__body_template__` を記述する。
 
-```
+```text
 {name} 様
 
 ヘッダー
@@ -32,7 +32,7 @@ $form_id = 9; // user form id
 
 // 管理者宛メール
 add_filter( 'mwform_admin_mail_mw-wp-form-' . $form_id, function($Mail, $values, $Data) {
-  $mwfwt = new MW_WP_Form_With_Template($Data, 'admin');
+  $mwfwt = new MW_WP_Form_With_Template($Mail, $Data);
   $Mail->body = $mwfwt->combine();
 
   return $Mail;
@@ -40,7 +40,7 @@ add_filter( 'mwform_admin_mail_mw-wp-form-' . $form_id, function($Mail, $values,
 
 // 自動返信メール
 add_filter( 'mwform_auto_mail_mw-wp-form-' . $form_id, function($Mail, $values, $Data) {
-  $mwfwt = new MW_WP_Form_With_Template($Data, 'auto');
+  $mwfwt = new MW_WP_Form_With_Template($Mail, $Data);
   $Mail->body = $mwfwt->combine();
 
   return $Mail;
@@ -108,4 +108,8 @@ if (!isset($template)) {
 
 ## 免責事項
 
-当システムをご利用、もしくはご利用になれないことにより生じるいかなるトラブルや損害には、当方は一切の責任を負いません。
+- 当システムをご利用、もしくはご利用になれないことにより生じるいかなるトラブルや損害には、当方は一切の責任を負いません。
+
+## 動作環境
+
+- PHP 7.3以上
